@@ -29,28 +29,29 @@ type innerService struct {
 }
 
 func (b *ContainerBuilder) Compile(configPath string, outputPath string) {
-	file, err := os.Open(configPath)
-	if err != nil {
-		panic(err)
-	}
+	config := b.getContainerConfig(configPath)
 
-	defer file.Close()
-	bytes, _ := ioutil.ReadAll(file)
+	packages := make([]dto.Package, 0)
+	packages = append(packages, config.Packages...)
 
-	var config dto.Config
-	err = json.Unmarshal(bytes, &config)
-	if err != nil {
-		panic(err)
+	if len(config.Imports) > 0 {
+		packages = append(packages, b.getPackagesFromImports(config.Imports)...)
 	}
 
 	services := make([]string, 0)
 	servicesMapping := make(map[string]innerService)
 	pkgAliases := make(map[string]string)
-	for _, pkg := range config.Packages {
+	for _, pkg := range packages {
 		alias := b.getPkgAlias(pkg.Name)
 		pkgAliases[pkg.Name] = alias
 
 		for _, service := range pkg.Services {
+			if len(service.Factory) == 2 && string([]rune(service.Factory[0])[0]) != "@" {
+				externalPkgName := service.Factory[1]
+				externalPkgAlias := b.getPkgAlias(externalPkgName)
+				pkgAliases[externalPkgName] = externalPkgAlias
+			}
+
 			serviceName := fmt.Sprintf("%s/%s", pkg.Name, service.Name)
 			servicesMapping[serviceName] = b.getInnerService(
 				config.Defaults,
@@ -85,10 +86,42 @@ func (b *ContainerBuilder) Compile(configPath string, outputPath string) {
 		registeredServices,
 	)
 
-	err = ioutil.WriteFile(outputPath, []byte(output), 0644)
+	err := ioutil.WriteFile(outputPath, []byte(output), 0644)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (b *ContainerBuilder) getPackagesFromImports(imports []string) []dto.Package {
+	packages := make([]dto.Package, 0)
+	for _, path := range imports {
+		config := b.getContainerConfig(path)
+		packages = append(packages, config.Packages...)
+
+		if len(config.Imports) > 0 {
+			packages = append(packages, b.getPackagesFromImports(config.Imports)...)
+		}
+	}
+
+	return packages
+}
+
+func (b *ContainerBuilder) getContainerConfig(path string) dto.Config {
+	file, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+
+	defer file.Close()
+	bytes, _ := ioutil.ReadAll(file)
+
+	var config dto.Config
+	err = json.Unmarshal(bytes, &config)
+	if err != nil {
+		panic(err)
+	}
+
+	return config
 }
 
 func (b *ContainerBuilder) getInnerService(defaults dto.Defaults, pkg dto.Package, pkgAlias string, service dto.Service, serviceName string) innerService {
