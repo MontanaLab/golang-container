@@ -8,6 +8,12 @@
 The structure of the configuration file must be like this:
 ```
 {
+    "imports": {
+        "path/to/another/configuration.json",
+        "path/to/another/configuration.json",
+        "path/to/another/configuration.json",
+        "path/to/another/configuration.json"
+    },
     "defaults": {
         "pointer": true,
         "public": false
@@ -31,7 +37,8 @@ The structure of the configuration file must be like this:
 }
 ```
 There are two sections in the configuration file:
-1. `defaults` **_(required)_** - in this section you can set up default values for your container. There two options:
+1. `imports` **_(optional)_** - in this section, you can declare all imports you want to import to your container. The imports section is an array of paths to other configuration files for your container. This option can help you to decomposite a one big container file into many small files for comfortable management
+2. `defaults` **_(required)_** - in this section you can set up default values for your container. There two options:
     - `pointer` `bool` **_(required)_** - this option is necessary to say to the container that all registered services are returning as a pointer by default
     - `public` `bool` **_(required)_** - the role of this option is to set up access to registered services. If you set up the value of it to `true`, the container will understand you want all services can be extracted from it with the container function `get`. In another hand, if you set up the value of it to `false` container will hide all services for function `get` and exclusion will be services that you will set up as `public: true` in the service configuration block.
     - Example:
@@ -41,10 +48,10 @@ There are two sections in the configuration file:
         "public": false // will hide all services for function get
     },
     ```
-2. `packages` **_(required)_** - the array of all packages that you want to register in your container. The structure of it is:
+3. `packages` **_(required)_** - the array of all packages that you want to register in your container. The structure of it is:
     - `name` `string` **_(required)_** - the name of the package that you want to add to the container
     - `services` `[]Service` **_(required)_** - the array of services from the current package that you want to register in the container. The structure of service you can find below.
-    2.1. `Service` - the item of package services block
+    3.1. `Service` - the item of package services block
         - `name` `string` **_(required)_** - the name of registering service
         - `factory` `[]string` **_(required)_** - the way that container will create an instance of your service. There three ways to create a new instance of service. About these ways, you can read below.
         - `public` `bool` **_(optional)_** - this flag says that there are no ways to access the service with the container function `get`
