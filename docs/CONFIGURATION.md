@@ -87,4 +87,6 @@ There are two sections in the configuration file:
 
 here CreateFunction - is the function that returns an instance of the desired service
 ```
-    
+
+## More examples
+If you need more examples, you can find them in `example` folder

@@ -37,6 +37,6 @@ func main() {
 2. Create output folder: `mkdir -p internal/builder`
 3. Create configuration file `config/container.json`. See the [Configuration examples](./CONFIGURATION.md).
 4. Run command `go run cmd/build.go -config="config/container.json" -output="internal/builder/builder.go"`
-5. Now you can see your compiled container in file `internal/builder/builder.go` and use function `BuildContainer()` from it that returns configurated container.
-6. Now you can get registered services with `get` function. For example: `service := container.get("github.com/package/foo/bar/PublicServiceName").(*bar.PublicServiceName)`
+5. Now you can see your compiled container in file `internal/builder/builder.go` and use function `BuildContainer` from it that returns configurated container.
+6. Now you can get registered services with `Get` function. For example: `service := container.get("github.com/package/foo/bar/PublicServiceName").(*bar.PublicServiceName)`
 7. Enjoy =)

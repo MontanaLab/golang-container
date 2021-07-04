@@ -1,0 +1,19 @@
+{
+    "packages": [
+       {
+            "name": "github.com/MontanaLab/golang-container/example/imports/pointers",
+            "services": [
+                {
+                    "name": "NonPointerService",
+                    "pointer": false,
+                    "factory": ["NewNonPointerService"]
+                },
+                {
+                    "name": "PointerService",
+                    "pointer": true,
+                    "factory": ["NewNonPointerService"]
+                }
+            ]
+       }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "imports": [
+        "example/imports/visibility.json",
+        "example/imports/pointers.json",
+        "example/imports/factories.json"
+    ],
+    "packages": [
+       {
+            "name": "github.com/MontanaLab/golang-container/example/imports",
+            "services": [
+                {
+                    "name": "ServiceWithConstructorInAnotherPackage",
+                    "factory": ["ServiceWithConstructor", "github.com/MontanaLab/golang-container/example/imports/another_package"]
+                },
+                {
+                    "name": "ServiceWithArguments",
+                    "factory": ["NewServiceWithArguments"],
+                    "arguments": [
+                        "@github.com/MontanaLab/golang-container/example/imports/visibility/PublicService",
+                        "@github.com/MontanaLab/golang-container/example/imports/visibility/PrivateService",
+                        "@github.com/MontanaLab/golang-container/example/imports/pointers/PointerService",
+                        "@github.com/MontanaLab/golang-container/example/imports/pointers/NonPointerService"
+                    ]
+                },
+                {
+                    "name": "ServiceViaFactory",
+                    "factory": ["@github.com/MontanaLab/golang-container/example/imports/factories/FactoryForService", "Make"]
+                }
+            ]
+       }
+    ]
+}

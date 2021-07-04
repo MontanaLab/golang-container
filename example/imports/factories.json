@@ -1,0 +1,13 @@
+{
+    "packages": [
+       {
+            "name": "github.com/MontanaLab/golang-container/example/imports/factories",
+            "services": [
+                {
+                    "name": "FactoryForService",
+                    "factory": ["NewFactoryForService"]
+                }
+            ]
+       }
+    ]
+}

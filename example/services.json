@@ -1,0 +1,23 @@
+{
+    "imports": [
+        "example/imports/services.json"
+    ],
+    "defaults": {
+        "public": false,
+        "pointer": true
+    },
+    "packages": [
+        {
+             "name": "github.com/MontanaLab/golang-container/example",
+             "services": [
+                 {
+                     "name": "ServiceWithArgumentFromFactory",
+                     "factory": ["NewServiceWithArgumentFromFactory"],
+                     "arguments": [
+                         "@github.com/MontanaLab/golang-container/example/imports/ServiceViaFactory"
+                     ]
+                 }
+             ]
+        }
+     ]
+}
