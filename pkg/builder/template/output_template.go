@@ -17,8 +17,8 @@ import (
 // Date of generation: %s
 //
 // =====================================================================================================
-func BuildContainer() *container.Container {
-	compiledContainer := container.NewContainer()
+func BuildContainer(fatalHanlder func(format string, v ...interface{})) *container.Container {
+	compiledContainer := container.NewContainer(fatalHanlder)
 	%s
 	return compiledContainer
 }

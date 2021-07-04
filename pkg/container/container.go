@@ -1,20 +1,17 @@
 package container
 
-import (
-	"fmt"
-	"log"
-)
-
 type Container struct {
-	registered map[string]func(c *Container) interface{}
-	services   map[string]interface{}
+	fatalHanlder func(format string, v ...interface{})
+	registered   map[string]func(c *Container) interface{}
+	services     map[string]interface{}
 }
 
 // NewContainer - the container constructor
-func NewContainer() *Container {
+func NewContainer(fatalHanlder func(format string, v ...interface{})) *Container {
 	instance := &Container{
-		services:   make(map[string]interface{}),
-		registered: make(map[string]func(c *Container) interface{}),
+		fatalHanlder: fatalHanlder,
+		services:     make(map[string]interface{}),
+		registered:   make(map[string]func(c *Container) interface{}),
 	}
 
 	instance.Register("container.Container", func(c *Container) interface{} {
@@ -27,7 +24,8 @@ func NewContainer() *Container {
 // Register - the function that registers services in container
 func (c *Container) Register(service string, resolver func(c *Container) interface{}) {
 	if c.registered[service] != nil {
-		log.Fatal(fmt.Sprintf("Service with name `%s` already registered in container", service))
+		c.fatalHanlder("Service with name `%s` already registered in container", service)
+		return
 	}
 
 	c.registered[service] = resolver
@@ -40,7 +38,8 @@ func (c *Container) Get(service string) interface{} {
 	}
 
 	if c.registered[service] == nil {
-		log.Fatal(fmt.Sprintf("Service with name `%s` hasn't registered in container", service))
+		c.fatalHanlder("Service with name `%s` hasn't registered in container", service)
+		return nil
 	}
 
 	c.services[service] = c.registered[service](c)

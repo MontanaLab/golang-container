@@ -1,0 +1,19 @@
+{
+    "packages": [
+       {
+            "name": "github.com/MontanaLab/golang-container/example/imports/visibility",
+            "services": [
+                {
+                    "name": "PublicService",
+                    "public": true,
+                    "factory": ["NewPublicService"]
+                },
+                {
+                    "name": "PrivateService",
+                    "public": false,
+                    "factory": ["NewPrivateService"]
+                }
+            ]
+       }
+    ]
+}
